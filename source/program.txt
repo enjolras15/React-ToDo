@@ -1,0 +1,100 @@
+
+let ToDoList=[{name:"todo",date:"2024/03/03",id:0},{name:"todo2",date:"2024/03/03",id:1},{name:"todo3",date:"2024/03/02",id:2}];
+
+function NowDate(i) {
+
+let date = new Date();
+date.setDate(date.getDate() + i);
+
+let year = date.getFullYear();
+let month = ('0' + (date.getMonth() + 1)).slice(-2);
+let day = ('0' + date.getDate()).slice(-2);
+
+let formattedDate = year + '/' + month + '/' + day;
+
+return formattedDate;
+
+}
+
+function FilterDate(CurrentDate,toDoDate) {
+
+if (CurrentDate==toDoDate) {
+
+return true;
+
+}
+
+return false;
+
+}
+
+class ToDo extends React.Component {
+
+ constructor(props) {
+    super(props);
+    this.state = {
+      id:0
+    };
+}
+
+ClickHandle(id) {
+alert(ToDoList[id].name);
+}
+
+  render() {
+    return React.createElement('a', { onClick: () => this.ClickHandle(this.props.id),className:"todo",herf:"#"}, ToDoList[this.props.id].name);
+  }
+}
+
+
+/*
+class btn extends React.Component {
+
+ClickHandle() {
+
+}
+
+  render() {
+    return React.createElement('button', { onClick: () => this.ClickHandle(),id:0,className:"btn"}, '追加');
+  }
+}
+*/
+
+class toDoList extends React.Component {
+
+ constructor(props) {
+    super(props);
+    this.state = {
+      CurrentDate:0
+    };
+}
+
+  render() {
+    const elements = [];
+
+    elements.push(React.createElement('h3',null,"　　　　　　　　　"+this.props.CurrentDate+'の予定'));
+
+    for(var i=0;i<ToDoList.length;i++) {
+    if (!FilterDate(this.props.CurrentDate,ToDoList[i].date)) continue; 
+
+    elements.push(React.createElement(ToDo,{id:ToDoList[i].id}));
+    elements.push(React.createElement('br'));
+
+    }
+
+    return React.createElement('div',null,elements);
+  }
+
+}
+
+function dispToDo(CurrentDate) {
+
+console.log(CurrentDate);
+React.render(React.createElement(toDoList,{CurrentDate:CurrentDate}),document.getElementById('root'));
+     
+}
+
+
+
+dispToDo(NowDate(0));
+
