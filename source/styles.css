@@ -51,6 +51,14 @@ ul li, ol li {
   padding: 0.5em 0;
 }
 
+textarea {
+
+height:150px;
+width:300px;
+
+
+}
+
 .ul2 {
   left: 530px;
   width: 500px;

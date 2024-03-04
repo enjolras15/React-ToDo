@@ -2,10 +2,9 @@
 //let ToDoList=[{name:"todo",date:"2024/03/03",id:0},{name:"todo2",date:"2024/03/03",id:1},{name:"todo3",date:"2024/03/02",id:2}];
 //localStorage.setItem('ToDoList', JSON.stringify(ToDoList));
 
-let addDay=0;
+let addDay = 0;
 let ToDoList = JSON.parse(localStorage.getItem('ToDoList') || '[]');
 
-console.log(ToDoList[0].name);
 
 function NowDate(i) {
 
@@ -26,40 +25,28 @@ return formattedDate;
 
 }
 
-function FilterDate(CurrentDate,toDoDate) {
-
-return CurrentDate==toDoDate;
-
-}
-
-class ToDo extends React.Component {
+class Allcomponents extends React.Component {
 
  constructor(props) {
     super(props);
     this.state = {
-      id:0
+       CurrentDate: 0,
+        ClickedId: -1,
+        state:0
     };
+    }
+
+FilterDate(CurrentDate, toDoDate) {
+
+    return CurrentDate == toDoDate;
+
 }
 
-ClickHandle(id) {
-alert(ToDoList[id].name);
+    ClickHandle(id) {
+    this.setState({ ClickedId:id});
 }
 
-  render() {
-    return React.createElement('a', { onClick: () => this.ClickHandle(this.props.id),className:"todo",herf:"#"}, ToDoList[this.props.id].name);
-  }
-}
-
-class ToDoListBox extends React.Component {
-
- constructor(props) {
-    super(props);
-    this.state = {
-      CurrentDate:0
-    };
-}
-
-  render() {
+render() {
 
  let buttons = [
             React.createElement(btn, { num: 0, text: "今日" }),
@@ -72,16 +59,15 @@ class ToDoListBox extends React.Component {
         ];
 
         for (let i = 0; i < ToDoList.length; i++) {
-            if (!FilterDate(this.props.CurrentDate, ToDoList[i].date)) continue;
-            elements.push(React.createElement(ToDo, { id: ToDoList[i].id }));
+            if (!this.FilterDate(this.props.CurrentDate, ToDoList[i].date)) continue;
+            elements.push(React.createElement('a', { onClick: () => this.ClickHandle(i), className: "todo", herf: "#" }, ToDoList[i].name));
             elements.push(React.createElement('br'));
         }
 
         return React.createElement('div', null,
             React.createElement('ul', null, buttons),
-            React.createElement('div', { className: "scrollable-box" },
-            React.createElement('div', null, elements)),
-            React.createElement(TextArea)
+            React.createElement('div', { className: "scrollable-box" }, elements),
+            React.createElement(TextArea, { CurrentDate: this.props.CurrentDate})
 
         );
     }
@@ -91,15 +77,15 @@ class btn extends React.Component {
 
  constructor(props) {
     super(props);
-    this.state = {
-      num:0,
-      text:""
+     this.state = {
+         num: 0,
+         text: ""
     };
-}
+    }
 
 ClickHandle(i) {
 
-    dispToDo(NowDate(i))
+    dispToDo(NowDate(i), -1);
   
   }
 
@@ -112,56 +98,84 @@ class TextArea extends React.Component {
 
  constructor(props) {
     super(props);
-    this.state = {
-      name:""
+     this.state = {
+      inputValue: '',
+      textValue: '',
+      CurrentDate: "",
     };
-
- }
-
-  render() {
-    return React.createElement('ul', { className:"ul2" });
-  }
-
-}
-
-
-function dispToDo(CurrentDate) {
-
-console.log(CurrentDate);
-
-React.render(React.createElement(ToDoListBox,{CurrentDate:CurrentDate}),document.getElementById('root'));   
-  
-}
-
-dispToDo(NowDate(0));
- 
-
-
-
-/*class toDoList extends React.Component {
-
- constructor(props) {
-    super(props);
-    this.state = {
-      CurrentDate:0
-    };
-}
-
-  render() {
-    const elements = [];
-
-    elements.push(React.createElement('h3',null,"　　　　　　　　　"+this.props.CurrentDate+'の予定'));
-
-    for(var i=0;i<ToDoList.length;i++) {
-    if (!FilterDate(this.props.CurrentDate,ToDoList[i].date)) continue; 
-
-    elements.push(React.createElement(ToDo,{id:ToDoList[i].id}));
-    elements.push(React.createElement('br'));
 
     }
 
-    return React.createElement('div',null,elements);
+
+    InputChangeHandle(event) {
+
+        this.setState({ inputValue: event.target.value });
+    }
+
+    TextChangeHandle(event) {
+
+        this.setState({ textValue: event.target.value });
+
+    }
+
+
+
+    ClickHandle(name) {
+
+        ToDoList[ToDoList.length] = { name: this.state.inputValue, date: this.props.CurrentDate, id: ToDoList.length };
+        this.setState({ inputValue: "" });
+        this.setState({ textValue: "" });
+        this.save();
+
+    }
+
+    save() {
+
+        localStorage.setItem('ToDoList', JSON.stringify(ToDoList));
+        dispToDo(this.props.CurrentDate, -1);
+    }
+
+    render() {
+
+    let elements = [
+         React.createElement('div', null, 'タイトル'),
+         React.createElement('input', { value: this.state.inputValue, onChange: (event) => this.InputChangeHandle(event) }),
+         React.createElement('br'),
+         React.createElement('div', null, '詳細'),
+         React.createElement('textarea', { value: this.state.textValue, onChange: (event) => this.TextChangeHandle(event) }),
+         React.createElement('br'),
+         React.createElement('button', { className: "btn", onClick: () => this.ClickHandle(this.props.id) }, "追加")
+        ];
+
+        return React.createElement('ul', { className: "ul2" }, elements);
   }
 
 }
-*/
+
+
+function dispToDo(CurrentDate,i) {
+
+    React.render(React.createElement(Allcomponents,{CurrentDate:CurrentDate,ClikedId:i}),document.getElementById('root'));   
+  
+}
+
+dispToDo(NowDate(0),-1);
+ 
+
+
+    //Rename(event,i) {
+
+    //    ToDoList[i].name = event.target.value;
+    //    this.setState({ inputValue: event.target.value });
+    //    dispToDo(this.props.CurrentDate, this.props.selectedToDo);
+    //}
+
+            //elements = [
+            //    React.createElement('div', null, 'タイトル'),
+            //    React.createElement('input', { value: ToDoList[this.props.selectedToDo].name, onChange: (event) => this.Rename(event, this.props.selectedToDo) }),
+            //    React.createElement('br'),
+            //    React.createElement('div', null, '詳細'),
+            //    React.createElement('textarea', { value: this.state.textValue, onChange: (event) => this.TextChangeHandle(event) }),
+            //    React.createElement('br'),
+            //    React.createElement('button', { className: "btn", onClick: () => this.save() },"OK")
+            //];
