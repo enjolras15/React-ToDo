@@ -8,21 +8,6 @@
                 this.addTodo = this.addTodo.bind(this);
                 this.toggleTodo = this.checkTodo.bind(this);
                 this.deleteTodo = this.deleteTodo.bind(this);
-                this.handleDragStart = this.handleDragStart.bind(this);
-                this.handleDragEnd = this.handleDragEnd.bind(this);
-                this.handleDrop = this.handleDrop.bind(this);
-            }
-
-            handleDragStart(event, id) {
-
-            }
-
-            handleDragEnd(event) {
-
-            }
-
-            handleDrop(event) {
-
             }
 
             componentDidMount() {
@@ -75,12 +60,7 @@
                         React.createElement('button', { onClick: this.addTodo }, 'Add Todo'),
                         React.createElement('div', { className:'box' },
                             todos.map(todo =>
-                                React.createElement('li', {
-                                    draggable: "true",
-                                    ondragstart: (event) => this.handleDragStart(event,todo.id),
-                                    ondragend: (event) => this.handleDragEnd(event),
-                                    ondrop: (event) => this.handleDrop(event)},
-     
+                                React.createElement('li', null,     
                                     React.createElement('input', {
                                         type: 'checkbox',
                                         checked: todo.completed,
